@@ -1,1 +1,1 @@
-# D3.js_USA
+Lancer WAMP ou XAMP et mettre le index.html en premier
