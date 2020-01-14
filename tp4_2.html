@@ -30,7 +30,7 @@
     // Ensemble dynamique de nombres aléatoires
 
 
-    d3.csv("mass-shootings-in-america-by-states.csv", function(data){
+    d3.csv("mass-shootings-in-america-by-states2.txt", function(data){
         const myDate = data[0].Date.split("/");
         var dataset = [];
         dataset.push([Math.round(myDate[2]),Math.round(data[0].TotalNumberOfVictims)]);
