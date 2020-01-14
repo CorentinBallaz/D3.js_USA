@@ -3,9 +3,111 @@
 <head>
   <title>KILLS AUX STATES</title>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://d3js.org/d3.v3.min.js"></script>
 
 <style type="text/css">
+
+* { 
+    margin: 0; 
+    padding: 0; 
+     }
+     body { 
+     font: 14px/1.4 Georgia, Serif; 
+     }
+    #page-wrap {
+    margin: 50px;
+    }
+    p {
+   margin: 20px 0; 
+    }
+
+  /* 
+  Generic Styling, for Desktops/Laptops 
+  */
+  table { 
+    width: 100%; 
+    border-collapse: collapse; 
+  }
+  /* Zebra striping */
+  tr:nth-of-type(odd) { 
+    background: #eee; 
+  }
+  th { 
+    background: #333; 
+    color: white; 
+    font-weight: bold; 
+    cursor: s-resize;
+    background-repeat: no-repeat;
+        background-position: 3% center;
+  }
+  td, th { 
+    padding: 6px; 
+    border: 1px solid #ccc; 
+    text-align: left; 
+  }
+  
+  th.des:after {
+      content: "\21E9";
+    }
+    
+    th.aes:after {
+      content: "\21E7";
+    }
+  
+  /* 
+  Max width before this PARTICULAR table gets nasty
+  This query will take effect for any screen smaller than 760px
+  and also iPads specifically.
+  */
+  @media 
+  only screen and (max-width: 760px),
+  (min-device-width: 768px) and (max-device-width: 1024px)  {
+  
+    /* Force table to not be like tables anymore */
+    table, thead, tbody, th, td, tr { 
+      display: block; 
+    }
+    
+    /* Hide table headers (but not display: none;, for accessibility) */
+    thead tr { 
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+    }
+    
+    tr { border: 1px solid #ccc; }
+    
+    td { 
+      /* Behave  like a "row" */
+      border: none;
+      border-bottom: 1px solid #eee; 
+      position: relative;
+      padding-left: 50%; 
+    }
+    
+    td:before { 
+      /* Now like a table header */
+      position: absolute;
+      /* Top/left values mimic padding */
+      top: 6px;
+      left: 6px;
+      width: 45%; 
+      padding-right: 10px; 
+      white-space: nowrap;
+    }
+    
+    /*
+    Label the data
+    */
+    td:before {
+      content: attr(data-th) ": ";
+          font-weight: bold;
+          width: 6.5em;
+          display: inline-block;
+    }
+  }
+  }
 
 /* On mouse hover, lighten state color */
 path:hover {
@@ -25,7 +127,7 @@ div.tooltip {
   pointer-events: none;         
 }
         
-/* Legend Font Style */
+/* Legend Font Style 
 body {
   font: 11px sans-serif;
 }
@@ -67,7 +169,7 @@ var path = d3.geo.path()               // path generator that will convert GeoJS
 var color = d3.scale.linear()
         .range(["rgb(99,94,92)","rgb(255,0,0)","rgb(217,125,13)","rgb(250,226,45)"]);
 
-var legendText = ["<5M people", ">5M people", ">10M people", ">20M people"];
+var legendText = ["<5M inhabitants", ">5M inhabitants", ">10M inhabitants", ">20M inhabitants"];
 
 //Create SVG element and append map to the SVG
 var svg = d3.select("body")
@@ -114,11 +216,20 @@ svg.selectAll("path")
            .style("opacity", .9);      
            div.text(d.properties.name)
            .style("left", (d3.event.pageX) + "px")     
-           .style("top", (d3.event.pageY) + "px");    
-  })   ;
+           .style("top", (d3.event.pageY) + "px")})
+  .on("click", click);
+function click(d) 
+{
+    nameState = d.properties.name;
+    tableau(nameState);
+
+    //console.log(d.properties.name);
+} ;    
+
 
 
 d3.csv("mass-shootings-in-america.csv", function(data){
+  console.log(data);
 
 svg.selectAll("circle")
   .data(data)
@@ -178,7 +289,67 @@ var legend = d3.select("body").append("svg")
 
 //------------------------------------------------------------------------
 
+function tableau(nameState){
+  d3.select('#page-wrap').selectAll('*').remove();
+  d3.csv("mass-shootings-in-america.csv", function(error, data) {
+    var cpt = 0;
+    var data2 = [];
+    for(var i = 0; i < data.length;i++){
+      if(data[i].State == nameState){
+        data2.push(data[i]);
+        cpt = cpt+1;
+        console.log(data[i].State);}
+    }
+    console.log(data2);
+        if (error) throw error;        
+        //var sortAscending = true;
 
+        var table = d3.select('#page-wrap').append('table');
+        //console.log(data[0]);
+        var titles = d3.keys(data[0]);
+        //console.log(titles);
+        var headers = table.append('thead').append('tr')
+                         .selectAll('th')
+                         .data(titles).enter()
+                         .append('th')
+                         .text(function (d) {
+                            return d;
+                          })
+                         .on('click', function (d) {
+                           headers.attr('class', 'header');
+                           
+                           /*if (sortAscending) {
+                             rows.sort(function(a, b) { return b[d] < a[d]; });
+                             sortAscending = false;
+                             this.className = 'aes';
+                           } else {
+                           rows.sort(function(a, b) { return b[d] > a[d]; });
+                           sortAscending = true;
+                           this.className = 'des';
+                           }*/
+                           
+                         });
+        
+        var rows = table.append('tbody').selectAll('tr')
+                     .data(data2).enter()
+                     .append('tr');
+        rows.selectAll('td')
+          .data(function (d) {
+            return titles.map(function (k) {
+              return { 'value': d[k], 'name': k};
+            });
+          }).enter()
+          .append('td')
+          .attr('data-th', function (d) {
+            return d.name;
+          })
+          .text(function (d) {
+            return d.value;
+          });
+      });
+}
 </script>
+  <div id="page-wrap">
+  </div>
 </body>
 </html>
