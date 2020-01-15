@@ -305,9 +305,15 @@ function tableau(nameState){
         //var sortAscending = true;
 
         var table = d3.select('#page-wrap').append('table');
-        //console.log(data[0]);
+        /*console.log((d3.keys(data[0]))[0]);
+        var title2 = [];
+        title2.push((d3.keys(data[0]))[0],(d3.keys(data[0]))[1],(d3.keys(data[0]))[2]);
+        console.log(title2);*/
         var titles = d3.keys(data[0]);
-        //console.log(titles);
+        titles.splice(titles.indexOf('CaseID'),1);
+        titles.splice(titles.indexOf('Latitude'),1);
+        titles.splice(titles.indexOf('Longitude'),1);
+        console.log(titles);
         var headers = table.append('thead').append('tr')
                          .selectAll('th')
                          .data(titles).enter()
