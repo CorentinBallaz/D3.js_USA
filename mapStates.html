@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>KILLS AUX STATES</title>
+  <title>USA MAP</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://d3js.org/d3.v3.min.js"></script>
@@ -234,6 +234,7 @@ svg.selectAll("path")
 function click(d) 
 {
     nameState = d.properties.name;
+    console.log(d);
     tableau(nameState);
 
     //console.log(d.properties.name);
@@ -305,6 +306,7 @@ var legend = d3.select("body").append("svg")
 function tableau(nameState){
   d3.select('#page-wrap').selectAll('*').remove();
   d3.select('#pie-chart').selectAll('*').remove();
+  d3.select('#titles').selectAll('*').remove();
   d3.csv("mass-shootings-in-america.csv", function(error, data) {
     var cpt = 0;
     var data2 = [];
@@ -314,6 +316,7 @@ function tableau(nameState){
         cpt = cpt+1;
       }
     }
+    if(data2.length == 0){return;}
         if (error) throw error;        
         //var sortAscending = true;
 
@@ -371,7 +374,7 @@ function tableau(nameState){
 
         // set the dimensions and margins of the graph
         var width2 = 750
-            height2 = 300
+            height2 = 220
             margin2 = 40
 
         var width3 = 400
@@ -381,6 +384,9 @@ function tableau(nameState){
         var radius = 110;
         console.log(radius);
 
+
+
+
         // append the svg object to the div called 'my_dataviz'
         var svg = d3.select('#pie-chart')
           .append("svg")
@@ -388,6 +394,27 @@ function tableau(nameState){
             .attr("height", height2)
           .append("g")
             .attr("transform", "translate(" + width2 / 2 + "," + height2 / 2 + ")");
+
+        var svgTitle1 = d3.select('#titles')
+        .append("svg")
+          .attr("width", 1200)
+          .attr("height", 25);
+
+        svgTitle1.append("text")
+          .attr("x", 420)             
+          .attr("y", 15)
+          .attr("text-anchor", "middle")  
+          .style("font-size", "16px") 
+          .style("text-decoration", "underline")  
+          .text("Shooter Race");
+
+        svgTitle1.append("text")
+          .attr("x", 1000)             
+          .attr("y", 15)
+          .attr("text-anchor", "middle")  
+          .style("font-size", "16px") 
+          .style("text-decoration", "underline")  
+          .text("Shooter Sex");
 
         var svg2 = d3.select('#pie-chart')
           .append("svg")
@@ -570,6 +597,8 @@ function tableau(nameState){
 }
 </script>
   <div id="pie-chart">
+  </div>
+  <div id="titles">
   </div>
   <div id="page-wrap">
   </div>
