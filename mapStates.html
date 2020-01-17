@@ -7,7 +7,6 @@
 <script src="https://d3js.org/d3.v3.min.js"></script>
 <script src="https://d3js.org/d3.v4.js"></script>
 <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-
 <style type="text/css">
 
 * { 
@@ -22,14 +21,10 @@
     }
 
     #pie-chart {
-      position: relative;  
+      position: relative;
       /*left: 200px;*/
       margin: 50px;
-    }
-    #pie-chart2 {
-      position: relative;
-      left: 700px;
-      margin: 50px;
+      margin-bottom: 2px;  
     }
     p {
    margin: 20px 0; 
@@ -593,8 +588,10 @@ function tableau(nameState){
                 var midangle2 = d.startAngle + (d.endAngle - d.startAngle) / 2
                 return (midangle2 < Math.PI ? 'start' : 'end')
             })
+
       });
 }
+
 </script>
   <div id="pie-chart">
   </div>
